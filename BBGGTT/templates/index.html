@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style2.css') }}">
+    <!-- =====BOX ICONS===== -->
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+    <title>Sentiment analysis on social networks in Arabic</title>
+</head>
+<body>
+    <!--===== HEADER =====-->
+    <header class="l-header">
+        <nav class="nav bd-grid">
+           
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    
+                    
+                    <li class="nav__item"><a href="#PHRASE" class="nav__link">جملة</a></li>
+                    <li class="nav__item"><a href="#LINK" class="nav__link ">رابط</a></li>
+                    <li class="nav__item"><a href="#about" class="nav__link">موضوع</a></li>
+                    <li class="nav__item"><a href="#home" class="nav__link active">الصفحة الرئيسية</a></li>
+                    
+                </ul>
+            </div>
+
+            <div class="nav__toggle" id="nav-toggle">
+                <i class='bx bx-menu'></i>
+            </div>
+            <div>
+                <a href="#" class="nav__logo"> تحليل المشاعر </a>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="l-main">
+        <!--===== HOME =====-->
+        <section class="home bd-grid" id="home">
+            <div class="home__data">
+                <h1 class="home__title">تحليل المشاعر على<br><span class="home__title-color">شبكات التواصل الاجتماعي</span><br >باللغة العربية</h1>
+
+                <a href="#" class="button" id="scrollButton">إبدأ</a>
+            </div>
+
+       
+            <div class="blob">
+                
+                <img src="{{url_for('static',filename = 'img/PIC3.png')}}" alt="Picture Emoji" class="home__img">
+                
+            </div>
+        </section>
+
+        <!--===== ABOUT =====-->
+        <section class="about section " id="about">
+
+            <div class="about__container bd-grid">
+                <div class="about__img">
+                    <img src="{{url_for('static',filename = 'img/PIC3.png')}}" alt="">
+                </div>
+                    
+                <div class="about__form">
+
+
+                    <header class="center-align">تحليل المشاعر</header>
+                    <form action="analytics.html" method="GET" class="form">
+                      
+    
+                      <div class="input-box right-align">
+                    
+                        <label>تحليل مشاعر تغريدات الريديت</label>
+                        <div class="select-box">
+                            <select>
+                              <option hidden>إختر مجال</option>
+                              <option name="type">التكنولوجيا</option>
+                              <option name="type">الطب والصحة</option>
+                              <option name="type">الأعمال والإدارة</option>
+                              <option name="type">رياضة</option>
+                              <option name="type">الفنون والثقافة</option>
+                              <option name="type">التربية والتعليم </option>
+                            </select>
+                          </div>
+                         
+                          <input type="text" name="query" placeholder="أدخل موضوع" required />
+                          <input type="number" name="limit" placeholder="عدد التغريدات" required />
+                            
+                           
+                            <button type="submit">تحليل</button>
+                      
+                      
+                    </form>
+                    
+                </div>                                   
+            </div>
+        </section>
+
+        <section class="LINK section " id="LINK">
+
+            <div class="about__container bd-grid">
+               
+                    
+                <div class="about__form">
+
+
+                    <header class="center-align">تحليل المشاعر</header>
+                    <form  method="POST" class="form">
+                      
+    
+                      <div class="input-box right-align">
+                    
+                        <label>تحليل مشاعر تغريدات التويتر بإستعمال الرابط</label>
+                       
+                        <input name="url" type="link" placeholder=" أدخل الرابط" required />
+                        
+                            
+                            <button type="submit">تحليل</button>
+                      
+                      
+                    </form>
+                    
+                </div> 
+                                                  
+            </div>
+            <div class="about__img twitter">
+                <img src="{{url_for('static',filename = 'img/TW.png')}}" alt="" style="left: 5cm;">
+            </div></div>
+        </section> 
+        <section class="PHRASE section " id="PHRASE">
+
+            <div class="about__container bd-grid">
+                <div class="about__img">
+                    <img src="{{url_for('static',filename = 'img/PHRASE.png')}}" alt="">
+                </div>
+                    
+                <div class="about__form">
+
+
+                    <header class="center-align">تحليل المشاعر</header>
+                    <form method="POST" class="form">
+                      
+    
+                      <div class="input-box right-align">
+                    
+                        
+                      
+                      <div class="input-box  right-align">
+                        <label>تحليل مشاعر جملة</label>
+                        <input type="text" name="text" id="textInput" placeholder="أدخل جملة" required />
+                        
+                          
+                        </div>
+                        
+                      </div>
+                      <button type="submit">تحليل</button>
+                    </form>
+                    
+                </div>                                   
+            </div>
+        </section>
+
+    </main>
+
+    <!--===== FOOTER =====-->
+    <footer class="footer">
+        <p class="footer__title">Sentiment analysis </p>
+        <div class="footer__social">
+            <a href="#" class="footer__icon"><i class='bx bxl-facebook' ></i></a>
+            <a href="#" class="footer__icon"><i class='bx bxl-instagram' ></i></a>
+            <a href="#" class="footer__icon"><i class='bx bxl-twitter' ></i></a>
+        </div>
+        <p class="footer__copy">&#169; SDIA STUDENT. All rights reserved</p>
+    </footer>
+
+
+    <!--===== SCROLL REVEAL =====-->
+    <script src="https://unpkg.com/scrollreveal"></script>
+
+    <!--===== MAIN JS =====-->
+    <script src="script-home.js"></script>
+</body>
+</html>
