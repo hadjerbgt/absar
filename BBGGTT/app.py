@@ -46,7 +46,7 @@ def analyze():
         if search_type == 'sport':
             subreddit_to_search = 'sports'
 
-        submissions = reddit.subreddit(subreddit_to_search).search(search_query, limit=limit, time_filter='week')
+        submissions = reddit.subreddit(subreddit_to_search).search(search_query, limit=limit, time_filter='all')
 
         title_ratings = []
         recent_titles = []
