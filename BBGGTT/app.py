@@ -1,9 +1,109 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+import praw
+from transformers import pipeline
+from flask_cors import CORS
+import re
 from playwright.sync_api import sync_playwright
 import jmespath
 import requests
 
 app = Flask(__name__)
+CORS(app)
+
+# Reddit API client setup
+reddit = praw.Reddit(
+    client_id='LChxVKKanHy2xEOwKnpDxQ',
+    client_secret='RgtMN6iE-bkUi8wd6QbaQEiCM2SYCg',
+    user_agent='Competitive-Judge236'
+)
+
+# Sentiment analysis model setup
+sentiment_model = pipeline(
+    "sentiment-analysis",
+    model="PRAli22/AraBert-Arabic-Sentiment-Analysis"
+)
+
+def normalize_text(text):
+    """Normalize text: convert to lowercase and remove punctuation."""
+    text = text.lower()
+    text = re.sub(r'[^\u0600-\u06FF\s]', '', text)
+    return text
+
+@app.route('/analyze', methods=['GET', 'POST'])
+def analyze():
+    if request.method == 'POST':
+        search_query = request.form.get('query')
+        search_type = request.form.get('type')
+        limit = request.form.get('limit', default=20, type=int)
+
+        if not search_query:
+            return jsonify({'error': 'No query provided. Please specify a query.'}), 400
+
+        if limit < 1:
+            return jsonify({'error': 'Invalid limit value. Please specify a positive integer.'}), 400
+
+        subreddit_to_search = 'all'
+        if search_type == 'sport':
+            subreddit_to_search = 'sports'
+
+        submissions = reddit.subreddit(subreddit_to_search).search(search_query, limit=limit, time_filter='week')
+
+        title_ratings = []
+        recent_titles = []
+        total_rating = {'positive': 0, 'negative': 0, 'neutral': 0}
+        
+        positive_scores = []
+        neutral_scores = []
+        negative_scores = []
+
+        for submission in submissions:
+            title = submission.title
+            normalized_title = normalize_text(title)
+            result = sentiment_model(normalized_title)
+            label = result[0]['label'].lower()
+            score = result[0]['score']
+
+            positive_scores.append(score if label == 'positive' else 0)
+            neutral_scores.append(score if label == 'neutral' else 0)
+            negative_scores.append(score if label == 'negative' else 0)
+
+            total_rating[label] += 1
+
+            author_username = submission.author.name if submission.author else 'Unknown'
+            author_profile_picture = submission.author.icon_img if submission.author and submission.author.icon_img else ''
+
+            title_ratings.append({
+                'title': title,
+                'label': label,
+                'score': score,
+                'author': {
+                    'username': author_username,
+                    'profile_picture': author_profile_picture
+                }
+            })
+
+            recent_titles.append(title)
+        
+        total_submissions = limit
+        sentiment_percentages = {
+            'positive': (total_rating['positive'] / total_submissions) * 100 if total_submissions > 0 else 0,
+            'negative': (total_rating['negative'] / total_submissions) * 100 if total_submissions > 0 else 0,
+            'neutral': (total_rating['neutral'] / total_submissions) * 100 if total_submissions > 0 else 0
+        }
+
+        response = {
+            'title_ratings': title_ratings,
+            'total_rating': total_rating,
+            'recent_titles': recent_titles,
+            'sentiment_percentages': sentiment_percentages,
+            'positive_scores': positive_scores,
+            'neutral_scores': neutral_scores,
+            'negative_scores': negative_scores
+        }
+
+        return render_template('result.html', response=response)
+
+
 
 # Updated API URL
 API_URL = "https://api-inference.huggingface.co/models/Abdou/arabert-base-algerian"

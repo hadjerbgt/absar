@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-circle-progress/1.2.2/circle-progress.min.js"></script>
+    <title>Responsive CSS Card Layout using Flexbox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <div class="back-button">
+            <a href="{{ url_for('index') }}"><i class="fa fa-arrow-left" style="font-size: 1em;"></i> <b>رجوع</b> </a>
+        </div>
+        <div class="title">
+           <img src="{{url_for('static',filename = 'img/logo2.png')}}"style="height: 50px;"> 
+        </div>
+    </div>
+    <!--card layout start-->
+    
+    <div class="container">
+        <div class="row">
+            <div class="card-02" style="width: 500px;">
+                <div class="chart-container" style="width: 250px;">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+    
+       
+                    <div class="card-01" style=" background: linear-gradient(to right, #ffa288, rgb(255, 200, 203));">
+                        <div class="hover-square-01"></div>
+                        <div class="imgBx">
+                            <a href="#">
+                                <img src="{{url_for('static',filename = 'img/one.png')}}">
+                            </a>
+                        </div>
+                        <div class="circle">
+                            <div class="bar" data-value="{{ response.sentiment_percentages.negative / 100 }}"></div>
+                            <div class="box"><span></span></div>
+                        </div>
+                        <div class="text" dir="rtl">نسبة المشاعر السلبية: <span id="negative-score"></span>%</div>
+                    </div>
+
+
+                    <div class="card-01" style=" background: linear-gradient(to right, #8ec7ef, rgb(152, 228, 255));">
+                        <div class="hover-square-02"></div>
+                        <div class="imgBx">
+                            <a href="#">
+                                <img src="{{url_for('static',filename = 'img/two.png')}}">
+                            </a>
+                        </div>  
+                        <div class="circle">
+                            <div class="bar" data-value="{{ response.sentiment_percentages.neutral / 100 }}"></div>
+                            <div class="box"><span></span></div>
+                        </div>
+                        <div class="text" dir="rtl">نسبة المشاعر المحايدة: <span id="neutral-score"></span>%</div>
+                    </div>  
+ 
+            
+
+                    <div class="card-01" style=" background: linear-gradient(to right, #86e49d, #b2fec5);">
+                        <div class="hover-square-03"></div>
+                        <div class="imgBx">
+                            <a href="#">
+                                <img src="{{url_for('static',filename = 'img/three.png')}}">
+                            </a>
+                        </div>  
+                        <div class="circle">
+                            <div class="bar" data-value="{{ response.sentiment_percentages.positive / 100 }}"></div>
+                            <div class="box"><span></span></div>
+                        </div>
+                        <div class="text" dir="rtl">نسبة المشاعر الإيجابية: <span id="positive-score"></span>%</div>
+                    </div>  
+
+        </div>      
+    </div>
+    
+    <div class="row">
+        <div class="card-02">
+            <div class="chart-container">
+              <canvas id="barChart"width="500" height="300"></canvas>
+            </div>
+          </div>
+          <div class="card-02">
+            <div class="chart-container">
+              <canvas id="pieChart" width="500" height="300"></canvas>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="card-03" id="bgt">
+           
+                <section class="table__header">
+                    <div class="export__file">
+                        <label for="export-file" class="export__file-btn" title="Export File"></label>
+                        <input type="checkbox" id="export-file">
+                        <div class="export__file-options">
+                            <label>Export As &nbsp; &#10140;</label>
+                            <label for="export-file" id="toPDF">PDF <img src="{{url_for('static',filename = 'img/pdf.png')}}" alt=""></label>
+                            <label for="export-file" id="toJSON">JSON <img src="{{url_for('static',filename = 'img/json.png')}}" alt=""></label>
+                            <label for="export-file" id="toCSV">CSV <img src="{{url_for('static',filename = 'img/csv.png')}}" alt=""></label>
+                            <label for="export-file" id="toEXCEL">EXCEL <img src="{{url_for('static',filename = 'img/excel.png')}}" alt=""></label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <img src="{{url_for('static',filename = 'img/search.png')}}" alt="">
+                        <input type="search" placeholder="ابحث هنا…" dir="rtl">
+                    </div>
+                    
+                    <h1>أشهر التغريدات حول الموضوع المقترح</h1>
+
+                </section>
+                <section class="table__body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <!-- and here display if its positif or negatif -->
+                                <th> الحالة <span class="icon-arrow">&UpArrow;</span></th>
+                                <th> الدقة <span class="icon-arrow">&UpArrow;</span></th>
+                                <!-- here the recent_titles -->
+                                <th> التغريدة <span class="icon-arrow">&UpArrow;</span></th>
+                                <!-- here the  title_ratings -->
+                                <th> المستخدم <span class="icon-arrow">&UpArrow;</span></th>
+                                <th> </th>
+                                <!-- here ordred numbers start from  -->
+                                <th> #<span class="icon-arrow">&UpArrow;</span></th>
+                                
+                                
+                               
+                                
+                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rating in response.title_ratings %}
+                            <tr>
+                                <td>         <p class="
+                                    {% if rating.label == 'positive' %}
+                                        status delivered
+                                    {% elif rating.label == 'negative' %}
+                                        status cancelled
+                                    {% elif rating.label == 'neutral' %}
+                                        status shipped
+                                    {% endif %}
+                                ">{% if rating.label == 'positive' %}
+                                إيجابي
+                            {% elif rating.label == 'negative' %}
+                            سلبي
+                            {% elif rating.label == 'neutral' %}
+                            محايد
+                            {% endif %}</p> </td>
+                                <td> {{ rating.score | round(2) }} </td>
+                                <td> {{ rating.title }}  </td>
+                                <td>{{ rating.author.username }}  </td>
+                                <td> <img src="{{ rating.author.profile_picture }}" alt=""> </td>
+                                <td> {{ loop.index }}</td>
+                                
+                            </tr>
+                            {% endfor %}
+
+                               
+
+                        </tbody>
+                    </table>
+                </section>
+            
+        </div>
+      </div>
+</div>
+<script src="script.js"></script>
+
+<script>
+    
+        $(document).ready(function() {
+            // Initialize pie chart
+            var ctx2 = document.getElementById('lineChart').getContext('2d');
+            var sentimentScores = [
+                parseFloat($('.circle .bar').eq(0).attr('data-value')) * 100,
+                parseFloat($('.circle .bar').eq(1).attr('data-value')) * 100,
+                parseFloat($('.circle .bar').eq(2).attr('data-value')) * 100
+            ];
+        
+            var pieChart = new Chart(ctx2, {
+              type: 'doughnut',
+              data: {
+                labels: ['سلبي', 'محايد', 'إيجابي'],
+                datasets: [{
+                  label: 'Sentiment Scores',
+                  data: sentimentScores,
+                  backgroundColor: [
+                    
+                    '#ffa28884','#6fc9ea8e','#86e49e58'
+                    
+                  ],
+                  borderColor: [
+                   '#ffa288',  '#6fcaea', '#86e49d',
+                  
+                    
+                  ],
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+        
+            // Initialize circle progress bars
+            $('.circle .bar').each(function(index, element) {
+                let value = parseFloat($(element).attr('data-value'));
+                $(element).circleProgress({
+                    value: value
+                }).on('circle-animation-progress', function(event, progress, stepValue) {
+                    $(this).parent().find("span").text((stepValue * 100).toFixed(2) + "%");
+                    if (index === 0) {
+                        $('#negative-score').text((stepValue * 100).toFixed(2));
+                    } else if (index === 1) {
+                        $('#neutral-score').text((stepValue * 100).toFixed(2));
+                    } else if (index === 2) {
+                        $('#positive-score').text((stepValue * 100).toFixed(2));
+                    }
+                });
+            });
+        
+            // Rearrange sentiment_result based on sentiment labels
+            var sentimentLabels = ['negative', 'neutral', 'positive'];
+            var sentimentIndices = {
+                'negative': -1,
+                'neutral': -1,
+                'positive': -1
+            };
+        
+            // Find the index of each sentiment label
+            sentimentLabels.forEach(function(label, index) {
+                sentiment_result.forEach(function(sentiment, i) {
+                    if (sentiment.label === label) {
+                        sentimentIndices[label] = i;
+                    }
+                });
+            });
+        
+            // Reorder sentiment_result based on indices
+            var reorderedSentiments = [];
+            sentimentLabels.forEach(function(label) {
+                if (sentimentIndices[label] !== -1) {
+                    reorderedSentiments.push(sentiment_result[sentimentIndices[label]]);
+                }
+            });
+        
+            // Update sentiment_result with reordered sentiments
+            sentiment_result = reorderedSentiments;
+        });
+       
+     // Bar Chart
+     var ctx = document.getElementById('barChart').getContext('2d');
+     var labels = [];
+     for (var i = 1; i <= {{ response.recent_titles|length }}; i++) {
+         labels.push(i.toString());
+     }
+     var barChart = new Chart(ctx, {
+         type: 'bar',
+         data: {
+             labels: labels,
+             datasets: [{
+                 label: 'إيجابي',
+                 data: {{ response.positive_scores|tojson }},
+                 borderColor: '#86e49d',
+                 borderWidth: 1,
+                 backgroundColor: '#86e49e58',
+                 fill: false
+             }, {
+                 label: 'محايد',
+                 data: {{ response.neutral_scores|tojson }},
+                 borderColor: '#6fcaea',
+                 borderWidth: 1,
+                 backgroundColor: '#6fc9ea8e',
+                 fill: false
+             }, {
+                 label: 'سلبي',
+                 data: {{ response.negative_scores|tojson }},
+                 borderColor: '#ffa288',
+                 borderWidth: 1,
+                 backgroundColor: '#ffa28884', // Lighter shade for the shadow
+                 fill: false // Fill area under the line
+             }]
+         },
+         options: {
+             scales: {
+                 y: {
+                     beginAtZero: true
+                 }
+             }
+         }
+     });
+
+// line Chart
+
+var ctx = document.getElementById('pieChart').getContext('2d');
+var lineChart = new Chart(ctx, {
+type: 'line',
+data: {
+  labels: labels,
+  datasets: [{
+      label: 'إيجابي',
+      data: {{ response.positive_scores|tojson }},
+      borderColor: '#86e49d',
+      borderWidth: 1,
+      backgroundColor: '#86e49e58',
+      fill: true
+  }, {
+      label: 'محايد',
+      data: {{ response.neutral_scores|tojson }},
+      borderColor: '#6fcaea',
+      borderWidth: 1,
+      backgroundColor: '#6fc9ea8e',
+      fill: true
+  }, {
+      label: 'سلبي',
+      data: {{ response.negative_scores|tojson }},
+      borderColor: '#ffa288',
+      borderWidth: 1,
+      backgroundColor: '#ffa28884', // Lighter shade for the shadow
+      fill: true // Fill area under the line
+  }]
+},
+options: {
+scales: {
+  yAxes: [{
+    ticks: {
+      beginAtZero: true
+    }
+  }]
+}
+}
+});
+ 
+
+
+
+
+
+
+
+const search = document.querySelector('.input-group input'),
+table_rows = document.querySelectorAll('tbody tr'),
+table_headings = document.querySelectorAll('thead th');
+
+// 1. Searching for specific data of HTML table
+search.addEventListener('input', searchTable);
+
+function searchTable() {
+table_rows.forEach((row, i) => {
+let table_data = row.textContent.toLowerCase(),
+search_data = search.value.toLowerCase();
+
+row.classList.toggle('hide', table_data.indexOf(search_data) < 0);
+row.style.setProperty('--delay', i / 25 + 's');
+})
+
+document.querySelectorAll('tbody tr:not(.hide)').forEach((visible_row, i) => {
+visible_row.style.backgroundColor = (i % 2 == 0) ? 'transparent' : '#0000000b';
+});
+}
+
+// 2. Sorting | Ordering data of HTML table
+
+table_headings.forEach((head, i) => {
+let sort_asc = true;
+head.onclick = () => {
+table_headings.forEach(head => head.classList.remove('active'));
+head.classList.add('active');
+
+document.querySelectorAll('td').forEach(td => td.classList.remove('active'));
+table_rows.forEach(row => {
+row.querySelectorAll('td')[i].classList.add('active');
+})
+
+head.classList.toggle('asc', sort_asc);
+sort_asc = head.classList.contains('asc') ? false : true;
+
+sortTable(i, sort_asc);
+}
+})
+
+
+function sortTable(column, sort_asc) {
+[...table_rows].sort((a, b) => {
+let first_row = a.querySelectorAll('td')[column].textContent.toLowerCase(),
+second_row = b.querySelectorAll('td')[column].textContent.toLowerCase();
+
+return sort_asc ? (first_row < second_row ? 1 : -1) : (first_row < second_row ? -1 : 1);
+})
+.map(sorted_row => document.querySelector('tbody').appendChild(sorted_row));
+}
+
+// 3. Converting HTML table to PDF
+
+const pdf_btn = document.querySelector('#toPDF');
+const customers_table = document.querySelector('#customers_table');
+
+
+const toPDF = function (customers_table) {
+const html_code = `
+<!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="style.css">
+<div class="card-03" id="bgt" >${bgt.innerHTML}</div>`;
+
+const new_window = window.open();
+new_window.document.write(html_code);
+
+setTimeout(() => {
+new_window.print();
+new_window.close();
+}, 400);
+}
+
+pdf_btn.onclick = () => {
+toPDF(customers_table);
+}
+
+// 4. Converting HTML table to JSON
+
+const json_btn = document.querySelector('#toJSON');
+
+const toJSON = function (table) {
+let table_data = [],
+t_head = [],
+
+t_headings = table.querySelectorAll('th'),
+t_rows = table.querySelectorAll('tbody tr');
+
+for (let t_heading of t_headings) {
+let actual_head = t_heading.textContent.trim().split(' ');
+
+t_head.push(actual_head.splice(0, actual_head.length - 1).join(' ').toLowerCase());
+}
+
+t_rows.forEach(row => {
+const row_object = {},
+t_cells = row.querySelectorAll('td');
+
+t_cells.forEach((t_cell, cell_index) => {
+const img = t_cell.querySelector('img');
+if (img) {
+    row_object['customer image'] = decodeURIComponent(img.src);
+}
+row_object[t_head[cell_index]] = t_cell.textContent.trim();
+})
+table_data.push(row_object);
+})
+
+return JSON.stringify(table_data, null, 4);
+}
+
+json_btn.onclick = () => {
+const json = toJSON(customers_table);
+downloadFile(json, 'json')
+}
+
+// 5. Converting HTML table to CSV File
+
+const csv_btn = document.querySelector('#toCSV');
+
+const toCSV = function (table) {
+// Code For SIMPLE TABLE
+// const t_rows = table.querySelectorAll('tr');
+// return [...t_rows].map(row => {
+//     const cells = row.querySelectorAll('th, td');
+//     return [...cells].map(cell => cell.textContent.trim()).join(',');
+// }).join('\n');
+
+const t_heads = table.querySelectorAll('th'),
+tbody_rows = table.querySelectorAll('tbody tr');
+
+const headings = [...t_heads].map(head => {
+let actual_head = head.textContent.trim().split(' ');
+return actual_head.splice(0, actual_head.length - 1).join(' ').toLowerCase();
+}).join(',') + ',' + 'image name';
+
+const table_data = [...tbody_rows].map(row => {
+const cells = row.querySelectorAll('td'),
+img = decodeURIComponent(row.querySelector('img').src),
+data_without_img = [...cells].map(cell => cell.textContent.replace(/,/g, ".").trim()).join(',');
+
+return data_without_img + ',' + img;
+}).join('\n');
+
+return headings + '\n' + table_data;
+}
+
+csv_btn.onclick = () => {
+const csv = toCSV(customers_table);
+downloadFile(csv, 'csv', 'customer orders');
+}
+
+
+
+const excel_btn = document.querySelector('#toEXCEL');
+
+const toExcel = function (table) {
+
+
+const t_heads = table.querySelectorAll('th'),
+tbody_rows = table.querySelectorAll('tbody tr');
+
+const headings = [...t_heads].map(head => {
+let actual_head = head.textContent.trim().split(' ');
+return actual_head.splice(0, actual_head.length - 1).join(' ').toLowerCase();
+}).join('\t') + '\t' + 'image name';
+
+const table_data = [...tbody_rows].map(row => {
+const cells = row.querySelectorAll('td'),
+img = decodeURIComponent(row.querySelector('img').src),
+data_without_img = [...cells].map(cell => cell.textContent.trim()).join('\t');
+
+return data_without_img + '\t' + img;
+}).join('\n');
+
+return headings + '\n' + table_data;
+}
+
+excel_btn.onclick = () => {
+const excel = toExcel(customers_table);
+downloadFile(excel, 'excel');
+}
+
+const downloadFile = function (data, fileType, fileName = '') {
+const a = document.createElement('a');
+a.download = fileName;
+const mime_types = {
+'json': 'application/json',
+'csv': 'text/csv',
+'excel': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+}
+a.href = `
+data:${mime_types[fileType]};charset=utf-8,${encodeURIComponent(data)}
+`;
+document.body.appendChild(a);
+a.click();
+a.remove();
+}
+
+  
+</script>
+</body>
+</html>
